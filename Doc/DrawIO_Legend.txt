@@ -1,0 +1,26 @@
+#DIO_HOME
+-----------------------------------------------------------------
+
+1._____	Nom du groupe de tâches
+2._____	Pourcentage de completion des tâches
+3._____	Bouton filtre
+4._____	Bouton ajout groupe
+5._____	Bouton import groupe (PSN, à voir)
+6._____	Barre de tâches en highlight
+7._____	Image d'une tâche
+8._____	Groupe de tâche
+
+
+
+#DIO_TaskGroup
+-----------------------------------------------------------------
+
+9._____	Tâche
+10.____	Nom de la tâche
+11.____	Lien (Si rajouté)(Plusieurs possibles)
+12.____	Checkmark
+13.____	Espace commentaire
+14.____	Effacer tâche
+15.____	Ajout tâche
+16.____	Effacer groupe
+17.____	Mettre la tâche en highlight

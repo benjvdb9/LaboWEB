@@ -1,0 +1,11 @@
+Gestionnaire de tâches:
+
+Un site qui permet de créer un groupe de tâches contenant un certaine nombre 
+de tâches qu'on à rajouté. Eventuellement il serait interrasant de savoir importé une
+liste de trophé lié a un compte PSN grâce a l'API suivante (https://github.com/Tustin/psn-php)
+
+Contient une page Home qui nous permet de voir tous les groupes. Les boutons en haut
+à droite nous permettent de rajouter des groupes, d'en importer et de les arranger.
+
+La deuxième page nous permet selectioner une tâche et de l'editer ou de la mettre
+en highlight. On peut aussi cocher si on considère la tâche comme complète ou non. 
