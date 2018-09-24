@@ -6,6 +6,12 @@ liste de trophé lié a un compte PSN grâce a l'API suivante (https://github.com/T
 
 Contient une page Home qui nous permet de voir tous les groupes. Les boutons en haut
 à droite nous permettent de rajouter des groupes, d'en importer et de les arranger.
+Lorsequ'on rajoute un groupe il faut fournir le nom du groupe et le groupe sera créer
+ensuite. On peut rajouter des tâches dans ce groupe par après en cliquant sur le groupe. 
 
 La deuxième page nous permet selectioner une tâche et de l'editer ou de la mettre
-en highlight. On peut aussi cocher si on considère la tâche comme complète ou non. 
+en highlight. On peut aussi cocher si on considère la tâche comme complète ou non et
+ajouter un commentaire ou un lien. Pour ajouter ou modifier les propriétes d'une tâche
+on clique dessus et la tâche s'agrandit et nous offre plus d'option pour modifier la
+tâche. La seule chose qu'on sait modifier sans cliquer sur la tâche et de la cocher comme
+complète ou non.
