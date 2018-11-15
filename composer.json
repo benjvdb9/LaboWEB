@@ -9,6 +9,7 @@
         "symfony/asset": "*",
         "symfony/config": "*",
         "symfony/console": "*",
+        "symfony/debug-pack": "^1.0",
         "symfony/expression-language": "*",
         "symfony/flex": "^1.1",
         "symfony/form": "*",
@@ -26,7 +27,6 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "symfony/debug-pack": "*",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/profiler-pack": "*",

@@ -11,17 +11,16 @@ use App\Form\UserType;
 class TaskMNGRController extends Controller
 {
     /**
-     * @Route("/home/{id}", name="home")
+     * @Route("/home", name="home")
      */
-    public function index($id)
+    public function index()
     {
-        //$request = Request::createFromGlobals();
-        //$this->new();
+        $request = Request::createFromGlobals();
+        $form = $this->new();
         //$this->addAction($request);
-        $name = 'Benjamin' 
+        $name = 'Benjamin';
         return $this->render('task_mngr/MyPage.html.twig', [
-            'test' => $id,
-            'name' => $name,
+            'form' => $form->createView(),
             'controller_name' => 'TaskMNGRController',
         ]);
     }
@@ -55,8 +54,7 @@ class TaskMNGRController extends Controller
     {
         $form = $this->createForm(UserType::class, new Test());
 
-        return $this->render('task_mngr/MyPage.html.twig',
-                             array('form' => $form->createView()));
+        return $form;
     }
 
     public function addAction(Request $request)

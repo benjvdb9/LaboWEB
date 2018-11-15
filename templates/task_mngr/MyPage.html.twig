@@ -1,7 +1,7 @@
-<h1>MY TEST</h1>
+<div>
+    {{ form(form) }}
+</div>
 
-<b><i><u>{{ test }}</b></i></u>
-Hello {{ name }}
 {% for flashMessage in app.session.flashBag.get('notice') %}
     <div class="flash-notice">
         {{ flashMessage }}
