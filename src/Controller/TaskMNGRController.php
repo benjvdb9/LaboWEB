@@ -11,13 +11,17 @@ use App\Form\UserType;
 class TaskMNGRController extends Controller
 {
     /**
-     * @Route("/home", name="home")
+     * @Route("/home/{id}", name="home")
      */
-    public function index()
+    public function index($id)
     {
-        $this->new();
-        $this->getDB_Entry(1);
+        //$request = Request::createFromGlobals();
+        //$this->new();
+        //$this->addAction($request);
+        $name = 'Benjamin' 
         return $this->render('task_mngr/MyPage.html.twig', [
+            'test' => $id,
+            'name' => $name,
             'controller_name' => 'TaskMNGRController',
         ]);
     }
@@ -38,7 +42,7 @@ class TaskMNGRController extends Controller
 
     public function createDB_Entry()
     {
-        $test = new Test();
+        //$test = new Test();
         $test->setTest('First_Test');
         $test->setBertrand('First_Bertrand');
         
@@ -55,15 +59,17 @@ class TaskMNGRController extends Controller
                              array('form' => $form->createView()));
     }
 
-    /*public function addAction(Request $request)
+    public function addAction(Request $request)
     {
         $form = $this->createForm(UserType::class, new Test());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             return $this->redirect($this->generateUrl('add_succes'));
         }
 
-        return $this->render('add.html.twig', array('form' => $form->createView()));
-    }*/
+        //var_dump(array('form' => $form->createView()));
+        return $this->render('task_mng/MyPage.html.twig', array('form' => "HELLO"));
+    }
 }
