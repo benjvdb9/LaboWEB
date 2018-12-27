@@ -1,0 +1,5 @@
+DB: 	name: Ben
+	password: pass
+
+Startup -> Wamp
+	-> localhost/LaboWeb/public/index.php/home
