@@ -6,12 +6,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Test;
+use App\Entity\Projects;
 use App\Form\UserType;
+use App\Form\AddProjectType;
 
 class TaskMNGRController extends Controller
 {
     /**
-     * @Route("/home", name="home")
+     * @Route("/", name="home")
      */
     public function index()
     {
@@ -20,6 +22,40 @@ class TaskMNGRController extends Controller
         //$this->addAction($request);
         $name = 'Benjamin';
         return $this->render('task_mngr/MyPage.html.twig', [
+            'form' => $form->createView(),
+            'controller_name' => 'TaskMNGRController',
+        ]);
+    }
+
+    /**
+     * @Route("/projects", name="Projects")
+     */
+    public function projectsPage()
+    {
+        return $this->render('task_mngr/Projects.html.twig', [
+            'controller_name' => 'TaskMNGRController',
+        ]);
+    }
+
+    /**
+     * @Route("/add/project", name="addproj")
+     */
+    public function addProjectPage(Request $request)
+    {
+        $form = $this->createForm(AddProjectType::class, new Projects());
+        $form->get('title')->setData('MyProj');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $proj = $form->getData();
+            $proj->setCompletion(0);
+            $proj->setImage('https://i.imgur.com/0430aeq.jpg');
+
+            $this->postDB_Project($proj);
+            return $this->redirectToRoute('projects');
+        }
+
+        return $this->render('task_mngr/addProj.html.twig', [
             'form' => $form->createView(),
             'controller_name' => 'TaskMNGRController',
         ]);
@@ -39,22 +75,23 @@ class TaskMNGRController extends Controller
         $this->addFlash('notice', 'this was succesful');
     }
 
-    public function createDB_Entry()
+    public function addProject()
     {
-        //$test = new Test();
-        $test->setTest('First_Test');
-        $test->setBertrand('First_Bertrand');
-        
+        $proj = new Projects();
+        $proj->setTitle("test");
+        $proj->setCompletion(70);
+        $proj->setImage("htttp://www.google.com");
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($test);
         $em->flush();
     }
 
-    public function new()
+    public function postDB_Project(Projects $proj)
     {
-        $form = $this->createForm(UserType::class, new Test());
-
-        return $form;
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($proj);
+        $em->flush();
     }
 
     public function addAction(Request $request)

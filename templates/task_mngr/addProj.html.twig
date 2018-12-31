@@ -1,0 +1,12 @@
+<body>
+    <div>
+        <h2>Add new Project:</h2><br />
+        {{form(form)}}
+    </div>
+
+    {% for flashMessage in app.session.flashBag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+</body>
