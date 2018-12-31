@@ -5,9 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Test;
 use App\Entity\Projects;
-use App\Form\UserType;
 use App\Form\AddProjectType;
 
 class TaskMNGRController extends Controller
@@ -18,11 +16,7 @@ class TaskMNGRController extends Controller
     public function index()
     {
         $request = Request::createFromGlobals();
-        $form = $this->new();
-        //$this->addAction($request);
-        $name = 'Benjamin';
         return $this->render('task_mngr/MyPage.html.twig', [
-            'form' => $form->createView(),
             'controller_name' => 'TaskMNGRController',
         ]);
     }
@@ -32,7 +26,12 @@ class TaskMNGRController extends Controller
      */
     public function projectsPage()
     {
+        $projects = $this->getDB_AllProjects(1);
+        $not_empty = !empty($projects);
+
         return $this->render('task_mngr/Projects.html.twig', [
+            'projects' => $projects,
+            'not_empty' => $not_empty,
             'controller_name' => 'TaskMNGRController',
         ]);
     }
@@ -52,7 +51,7 @@ class TaskMNGRController extends Controller
             $proj->setImage('https://i.imgur.com/0430aeq.jpg');
 
             $this->postDB_Project($proj);
-            return $this->redirectToRoute('projects');
+            return $this->redirectToRoute('Projects');
         }
 
         return $this->render('task_mngr/addProj.html.twig', [
@@ -61,30 +60,34 @@ class TaskMNGRController extends Controller
         ]);
     }
 
-    public function getDB_Entry($id)
+    /**
+     * @Route("/{project_title}/tasks", name="Tasks")
+     */
+    public function projectsTasks($project_title)
+    {
+        return $this->render('task_mngr/Projects.html.twig', [
+            'controller_name' => 'TaskMNGRController',
+        ]);
+    }
+
+    public function getDB_AllProjects()
+    {
+        $rep = $this->getDoctrine()->getManager()->getRepository(Projects::class);
+        return $rep->findAll();
+    }
+
+    public function getDB_Project($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $test = $em->getRepository('App\Entity\Test')->find($id);
+        $proj = $em->getRepository(Projects::class)->find($id);
 
-        if (!$test) {
+        if (!$proj) {
             throw $this->createNotFoundException(
                 'id: '.$id
             );
         }
-        dump($test);
-        $this->addFlash('notice', 'this was succesful');
-    }
 
-    public function addProject()
-    {
-        $proj = new Projects();
-        $proj->setTitle("test");
-        $proj->setCompletion(70);
-        $proj->setImage("htttp://www.google.com");
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($test);
-        $em->flush();
+        return $proj;
     }
 
     public function postDB_Project(Projects $proj)
@@ -92,19 +95,5 @@ class TaskMNGRController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->persist($proj);
         $em->flush();
-    }
-
-    public function addAction(Request $request)
-    {
-        $form = $this->createForm(UserType::class, new Test());
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            return $this->redirect($this->generateUrl('add_succes'));
-        }
-
-        //var_dump(array('form' => $form->createView()));
-        return $this->render('task_mng/MyPage.html.twig', array('form' => "HELLO"));
     }
 }

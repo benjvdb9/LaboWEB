@@ -1,48 +1,55 @@
 <style>
-    #customers {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
+    img {
+        vertical-align: middle;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
     }
 
-    #customers td a {
+    #projects {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
         width: 100%;
+    }
+
+    #projects td, #projects th {
+        padding: 8px;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #projects tr:nth-child(even){background-color: #f2f2f2;}
+
+    #projects tr:hover {background-color: #ddd;}
+
+    #projects td a {
+        color: inherit;
         display: block;
+        text-decoration: none;
     }
 
-    #customers td, #customers th {
-    border: 1px solid #ddd;
-    padding: 8px;
-    }
-
-    #customers tr:nth-child(even){background-color: #f2f2f2;}
-
-    #customers tr:hover {background-color: #ddd;}
-
-    #customers th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
+    #projects th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #ddd;
     }
 </style>
 
-<a href="{{ path('addproj') }}" class="btn btn-primary btn-lg square" role="button">ADD</a>
+<a href="{{ path('addproj') }}" class="btn btn-primary btn-lg square" role="button">ADD PROJECT</a>
 
-<table id="customers">
-    <tr>
-        <a href="localhost/LaboWeb/public/">
-            <td>ECAM</td>
-            <td>70%</td>
-        </a>
-    </tr>
-    <tr>
-        <td>Livres</td>
-        <td>30%</td>
-    </tr>
-    <tr>
-        <td>Achats</td>
-        <td>52%</td>
-    </tr>
+<table id="projects">
+    {% for proj in projects if not_empty %}
+        <tr>
+            <td width="10%"><img src={{ proj.image }}></td>
+            <td><a href={{ proj.image }}>{{ proj.title }}</a></td>
+            <td><a href={{ proj.image }}>{{ proj.completion }}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>No Current Projects</td>
+        </tr>
+    {% endfor %}
 </table>
