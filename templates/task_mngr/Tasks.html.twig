@@ -6,6 +6,26 @@
         border-radius: 50%;
     }
 
+    #header {
+        display:flex;
+    }
+
+    #links {
+        flex: 1;
+        position: relative;
+        display:inline-block;
+    }
+
+    #links span {
+        position: absolute;
+        bottom: 0;
+    }
+
+    #percentage {
+        float: right;
+        display:inline-block;
+    }
+
     #tasks {
         font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
         border-collapse: collapse;
@@ -38,9 +58,18 @@
     }
 </style>
 
-<a href="{{ path('Projects') }}" class="btn btn-primary btn-lg square" role="button">RETURN TO PROJECTS</a>
-&nbsp;
-<a href="{{ path('addtask', {'project_title': project_title}) }}" class="btn btn-primary btn-lg square" role="button">ADD TASK</a>
+<div id="header">
+    <div id="links">
+        <span>
+            <a href="{{ path('Projects') }}" class="btn btn-primary btn-lg square" role="button">RETURN TO PROJECTS</a>
+            &nbsp;
+            <a href="{{ path('addtask', {'project_title': project_title}) }}" class="btn btn-primary btn-lg square" role="button">ADD TASK</a>
+        </span>
+    </div>
+    <div id="percentage">
+        <h2><b>{{ percentage }}%<b></h2>
+    </div>
+</div>
 
 <table id="tasks">
     {% if not_empty %}
@@ -54,7 +83,7 @@
         <tr>
             <td width="10%"><img src={{ task.image }}></td>
             <td><a href={{ task.image }}>{{ task.title }}</a></td>
-            <td><a href={{ path('chngstat', {task_id: task.id}) }}>
+            <td><a href={{ path('chngstat', {project_title: project_title, task_id: task.id}) }}>
             {% if task.status %}Complete{% else %}Uncomplete{% endif %}</a></td>
         </tr>
     {% else %}

@@ -5,7 +5,6 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\DBmanager;
 use App\Entity\Projects;
 use App\Entity\Tasks;
 use App\Form\AddProjectType;
@@ -56,6 +55,7 @@ class TaskMNGRController extends Controller
             $this->postDB_Project($proj);
             return $this->redirectToRoute('Projects');
         }
+        
 
         return $this->render('task_mngr/addProj.html.twig', [
             'form' => $form->createView(),
@@ -66,12 +66,21 @@ class TaskMNGRController extends Controller
     /**
      * @Route("/{project_title}/tasks", name="Tasks")
      */
-    public function tasksPage($project_title, Request $request)
+    public function tasksPage($project_title)
     {
         $tasks = $this->getDB_AllTasks($project_title);
         $not_empty = !empty($tasks);
+        $count = count($tasks);
+        $completed = 0;
+        foreach($tasks as $task){
+            if($task->getStatus()){
+                $completed += 1;
+            }
+        }
+        $percentage = $completed * 100 / $count; 
 
         return $this->render('task_mngr/Tasks.html.twig', [
+            'percentage' => $percentage,
             'project_title' => $project_title,
             'tasks' => $tasks,
             'not_empty' => $not_empty,
@@ -106,17 +115,21 @@ class TaskMNGRController extends Controller
     }
 
     /**
-     * @Route("/task/{task_id}/change/status", name="chngstat")
+     * @Route("{project_title}/tasks/{task_id}/change/status", name="chngstat")
      */
-    public function statusTasksPage($task_id)
+    public function statusTasksPage($project_title, $task_id)
     {
-        $DB = new DBmanager();
-        var_dump($DB);
-        //$DB->changeStatus($task_id);
+        $this->changeStatus($task_id);
 
-        return $this->render('task_mngr/addProj.html.twig', [
-            'controller_name' => 'TaskMNGRController',
-        ]);
+        return $this->redirectToRoute('Tasks', array('project_title' => $project_title));
+    }
+
+    public function changeStatus($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $task = $this->getDB_Task($id);
+        $task->setStatus(!$task->getStatus());
+        $em->flush();
     }
 
     public function getProjectId($title)
@@ -131,12 +144,6 @@ class TaskMNGRController extends Controller
         }
 
         return $proj->getId();
-    }
-
-    public function changeStatus($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $proj = $this->getDB_Project($id);
     }
 
     public function getDB_Project($id)
@@ -156,7 +163,7 @@ class TaskMNGRController extends Controller
     public function getDB_Task($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $task = $em->getRepository(Task::class)->find($id);
+        $task = $em->getRepository(Tasks::class)->find($id);
 
         if (!$task) {
             throw $this->createNotFoundException(
