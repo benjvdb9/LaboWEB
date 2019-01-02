@@ -44,8 +44,8 @@
     {% for proj in projects if not_empty %}
         <tr>
             <td width="10%"><img src={{ proj.image }}></td>
-            <td><a href={{ proj.image }}>{{ proj.title }}</a></td>
-            <td><a href={{ proj.image }}>{{ proj.completion }}</a></td>
+            <td><a href={{ path('Tasks', {project_title: proj.title}) }}>{{ proj.title }}</a></td>
+            <td><a href={{ path('Tasks', {project_title: proj.title}) }}>{{ proj.completion }}</a></td>
         </tr>
     {% else %}
         <tr>

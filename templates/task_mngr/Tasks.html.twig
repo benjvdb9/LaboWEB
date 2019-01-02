@@ -1,0 +1,65 @@
+<style>
+    img {
+        vertical-align: middle;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    #tasks {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #tasks td, #tasks th {
+        padding: 8px;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #tasks tr:nth-child(even){background-color: #f2f2f2;}
+
+    #tasks tr:hover {background-color: #ddd;}
+
+    #tasks td a {
+        color: inherit;
+        display: block;
+        text-decoration: none;
+    }
+
+    #tasks th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #ddd;
+    }
+</style>
+
+<a href="{{ path('Projects') }}" class="btn btn-primary btn-lg square" role="button">RETURN TO PROJECTS</a>
+&nbsp;
+<a href="{{ path('addtask', {'project_title': project_title}) }}" class="btn btn-primary btn-lg square" role="button">ADD TASK</a>
+
+<table id="tasks">
+    {% if not_empty %}
+        <tr>
+            <th></th>
+            <th>Tasks</th>
+            <th>Click to Complete ↓</th>
+        </tr>
+    {% endif %}
+    {% for task in tasks if not_empty %}
+        <tr>
+            <td width="10%"><img src={{ task.image }}></td>
+            <td><a href={{ task.image }}>{{ task.title }}</a></td>
+            <td><a href={{ path('chngstat', {task_id: task.id}) }}>
+            {% if task.status %}Complete{% else %}Uncomplete{% endif %}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>No Current Tasks</td>
+        </tr>
+    {% endfor %}
+</table>

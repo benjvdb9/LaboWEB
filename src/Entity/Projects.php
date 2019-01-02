@@ -24,7 +24,7 @@ class Projects
     private $title;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", unique=true)
      */
     private $completion;
 
