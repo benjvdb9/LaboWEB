@@ -6,6 +6,53 @@
         border-radius: 50%;
     }
 
+    {##td-header {text-align:center;}#}
+
+    #title {
+        float: left;
+        display:inline-block;
+    }
+
+    #link {
+        float:center;
+        display:inline-block;
+    }
+
+    #delete {
+        float: right;
+        display:inline-block;
+    }
+
+    .link-button {
+        color: black;
+        background-color: white;
+        border: 2px solid green;
+        display: inline-block;
+        border-radius: 12px;
+        -webkit-transition-duration: 0.4s;
+    }
+
+    .link-button:hover {
+        color: white;
+        background-color: green;
+        border: 2px solid green;
+        display: inline-block;
+        border-radius: 12px;
+    }
+
+    .del {
+        color: red;
+        background-color: #ffcccc;
+        border: none;
+        display: inline-block;
+        border-radius: 50%;
+    }
+
+    .del:hover {
+        color: black;
+        background-color: red;
+    }
+
     #header {
         display:flex;
     }
@@ -75,14 +122,34 @@
     {% if not_empty %}
         <tr>
             <th></th>
-            <th>Tasks</th>
+            <th>{{ project_title }}</th>
             <th>Click to Complete ↓</th>
         </tr>
     {% endif %}
     {% for task in tasks if not_empty %}
         <tr>
-            <td width="10%"><img src={{ task.image }}></td>
-            <td><a href={{ task.image }}>{{ task.title }}</a></td>
+            <td width="10%"><a href={{ task.image }}><img src={{ task.image }} /></a></td>
+            <td>
+                <div id="td-header">
+                    <div id="title">
+                        <a href={{ path('taskoptions', {project_title: project_title, task_id: task.id}) }}>
+                            {{ task.title }}&nbsp;&nbsp;&nbsp;
+                        </a>
+                    </div>
+                    {% if task.link %}
+                        <div id="link" align="center">
+                            <a href={{ task.link }}>
+                                <button class="link-button">Link</button>
+                            </a>    
+                        </div>
+                    {% endif %}
+                    <div id="delete" align="right">
+                        <a href="{{ path('deltask', {'project_title': project_title, 'task_id': task.id}) }}">
+                            <button class="del">&#10006;</button>
+                        </a>
+                    </div>
+                </div>
+            </td>
             <td><a href={{ path('chngstat', {project_title: project_title, task_id: task.id}) }}>
             {% if task.status %}Complete{% else %}Uncomplete{% endif %}</a></td>
         </tr>

@@ -10,6 +10,7 @@ use App\Entity\Tasks;
 use App\Form\AddProjectType;
 use App\Form\AddTaskType;
 use App\Form\CompleteType;
+use App\Form\TaskOptionsType;
 
 class TaskMNGRController extends Controller
 {
@@ -58,9 +59,20 @@ class TaskMNGRController extends Controller
         
 
         return $this->render('task_mngr/addProj.html.twig', [
+            'type' => 'Project',
             'form' => $form->createView(),
             'controller_name' => 'TaskMNGRController',
         ]);
+    }
+
+    /**
+     * @Route("/{project_title}/del", name="delproj")
+     */
+    public function delProjectPage($project_title)
+    {
+        $this->delProject($project_title);
+
+        return $this->redirectToRoute('Projects');
     }
 
     /**
@@ -70,14 +82,22 @@ class TaskMNGRController extends Controller
     {
         $tasks = $this->getDB_AllTasks($project_title);
         $not_empty = !empty($tasks);
-        $count = count($tasks);
-        $completed = 0;
-        foreach($tasks as $task){
-            if($task->getStatus()){
-                $completed += 1;
+
+        if ($not_empty){
+            $count = count($tasks);
+            $completed = 0;
+            foreach($tasks as $task){
+                if($task->getStatus()){
+                    $completed += 1;
+                }
             }
+            $percentage = round($completed * 100 / $count);
+        } else {
+            $percentage = 0;
         }
-        $percentage = $completed * 100 / $count; 
+
+        $id = $this->getProjectId($project_title);
+        $this->changeCompletion($id, $percentage);
 
         return $this->render('task_mngr/Tasks.html.twig', [
             'percentage' => $percentage,
@@ -109,9 +129,20 @@ class TaskMNGRController extends Controller
         }
 
         return $this->render('task_mngr/addProj.html.twig', [
+            'type' => 'Task',
             'form' => $form->createView(),
             'controller_name' => 'TaskMNGRController',
         ]);
+    }
+
+    /**
+     * @Route("/{project_title}/tasks/{task_id}/del", name="deltask")
+     */
+    public function delTasksPage($project_title, $task_id)
+    {
+        $this->delTask($task_id);
+
+        return $this->redirectToRoute('Tasks', array('project_title' => $project_title));
     }
 
     /**
@@ -124,11 +155,66 @@ class TaskMNGRController extends Controller
         return $this->redirectToRoute('Tasks', array('project_title' => $project_title));
     }
 
+    /**
+     * @Route("{project_title}/tasks/{task_id}/options", name="taskoptions")
+     */
+    public function taskOptions($project_title, $task_id, Request $request)
+    {
+        $form = $this->createForm(TaskOptionsType::class, new Tasks());
+        $task = $this->getDB_Task($task_id);
+        $form->get('image')->setData($task->getImage());
+        $form->get('description')->setData($task->getDescription());
+        $form->get('link')->setData($task->getLink());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $options = $form->getData();
+
+            $task->setImage($options->getImage());
+            $task->setDescription($options->getDescription());
+            $task->setLink($options->getLink());
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('Tasks', array('project_title' => $project_title));
+        }
+
+        return $this->render('task_mngr/taskOptions.html.twig', [
+            'form' => $form->createView(),
+            'controller_name' => 'TaskMNGRController',
+        ]);
+    }
+
+    public function delProject($title)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $id =$this->getProjectId($title);
+        $proj = $this->getDB_Project($id);
+        $em->remove($proj);
+        $em->flush();
+    }
+
+    public function delTask($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        var_dump($id);
+        $task = $this->getDB_Task($id);
+        $em->remove($task);
+        $em->flush();
+    }
+
     public function changeStatus($id)
     {
         $em = $this->getDoctrine()->getManager();
         $task = $this->getDB_Task($id);
         $task->setStatus(!$task->getStatus());
+        $em->flush();
+    }
+
+    public function changeCompletion($id, $completion)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $proj = $this->getDB_Project($id);
+        $proj->setCompletion($completion);
         $em->flush();
     }
 

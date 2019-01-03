@@ -6,6 +6,26 @@
         border-radius: 50%;
     }
 
+    #title {display:inline-block;}
+
+    #delete {
+        float: right;
+        display:inline-block;
+    }
+
+    .del {
+        color: red;
+        background-color: #ffcccc;
+        border: none;
+        display: inline-block;
+        border-radius: 50%;
+    }
+
+    .del:hover {
+        color: black;
+        background-color: red;
+    }
+
     #projects {
         font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
         border-collapse: collapse;
@@ -44,8 +64,19 @@
     {% for proj in projects if not_empty %}
         <tr>
             <td width="10%"><img src={{ proj.image }}></td>
-            <td><a href={{ path('Tasks', {project_title: proj.title}) }}>{{ proj.title }}</a></td>
-            <td><a href={{ path('Tasks', {project_title: proj.title}) }}>{{ proj.completion }}</a></td>
+            <td>
+                <div id="header">
+                    <div id="title">
+                        <a href={{ path('Tasks', {project_title: proj.title}) }}>{{ proj.title }}</a>
+                    </div>
+                    <div id="delete" align="right">
+                        <a href="{{ path('delproj', {'project_title': proj.title}) }}">
+                            <button class="del">&#10006;</button>
+                        </a>
+                    </div>
+                </div>
+            </td>
+            <td align="center"><a href={{ path('Tasks', {project_title: proj.title}) }}>{{ proj.completion }}%</a></td>
         </tr>
     {% else %}
         <tr>

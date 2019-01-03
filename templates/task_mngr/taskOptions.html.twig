@@ -1,0 +1,35 @@
+<body>
+    <div>
+        <h2>Task Options</h2><br />
+
+        <table>
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            <tr>
+                <td>{{form_label(form.image)}}&nbsp;</td>
+                <td>{{form_widget(form.image)}}</td>
+            </tr>
+            <tr>
+                <td>{{form_label(form.description)}}&nbsp;</td>
+                <td>{{form_widget(form.description)}}</td>
+            </tr>
+            <tr>
+                <td>{{form_label(form.link)}}&nbsp;</td>
+                <td>{{form_widget(form.link)}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>{{form_row(form.send)}}</td>
+            </tr>
+            {{ form_end(form) }}
+        </table>
+        <br /><br />
+        *: optional
+    </div>
+
+    {% for flashMessage in app.session.flashBag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+</body>
