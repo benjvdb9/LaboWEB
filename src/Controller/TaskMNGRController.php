@@ -59,6 +59,45 @@ class TaskMNGRController extends Controller
     }
 
     /**
+     * @Route("/api/post/project/{title}", name="dbp-tasks", methods={"GET", "PUT", "OPTIONS"})
+     */
+    public function DB_PostP($title)
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            $proj = new Projects();
+            $proj->setTitle($title);
+            $proj->setCompletion(0);
+            $proj->setImage('https://i.imgur.com/0430aeq.jpg');
+            $this->postDB_Project($proj);
+
+            $response = $this->convertToJson_Tasks();
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type', true);
+
+            return $response;
+        }
+    }
+
+    /**
+     * @Route("/api/del/project/{title}", name="dbd-tasks", methods={"GET", "PUT", "OPTIONS"})
+     */
+    public function DB_DelP($title)
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            str_replace("&§$", " ", $title);
+            $this->delProject($title);
+
+            $response = $this->convertToJson_Tasks();
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type', true);
+
+            return $response;
+        }
+    }
+
+    /**
      * @Route("/projects", name="Projects")
      */
     public function projectsPage()
@@ -221,7 +260,7 @@ class TaskMNGRController extends Controller
     public function delProject($title)
     {
         $em = $this->getDoctrine()->getManager();
-        $id =$this->getProjectId($title);
+        $id = $this->getProjectId($title);
         $proj = $this->getDB_Project($id);
         $em->remove($proj);
         $em->flush();
@@ -230,7 +269,6 @@ class TaskMNGRController extends Controller
     public function delTask($id)
     {
         $em = $this->getDoctrine()->getManager();
-        var_dump($id);
         $task = $this->getDB_Task($id);
         $em->remove($task);
         $em->flush();
