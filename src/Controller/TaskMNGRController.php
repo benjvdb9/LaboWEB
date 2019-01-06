@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Projects;
@@ -22,6 +26,36 @@ class TaskMNGRController extends Controller
         return $this->render('task_mngr/MyPage.html.twig', [
             'controller_name' => 'TaskMNGRController',
         ]);
+    }
+
+    /**
+     * @Route("/api/projects", name="db-projects", methods={"GET", "PUT", "OPTIONS"})
+     */
+    public function DB_projects()
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            $response = $this->convertToJson_Projects();
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type', true);
+
+            return $response;
+        }
+    }
+
+    /**
+     * @Route("/api/tasks", name="db-tasks", methods={"GET", "PUT", "OPTIONS"})
+     */
+    public function DB_Tasks()
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            $response = $this->convertToJson_Tasks();
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type', true);
+
+            return $response;
+        }
     }
 
     /**
@@ -285,5 +319,47 @@ class TaskMNGRController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->persist($task);
         $em->flush();
+    }
+
+    public function convertToJson_Projects()
+    {
+        $encoders = array(new JsonEncoder());
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(2);
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $normalizers = array($normalizer);
+        $serializer = new Serializer($normalizers, $encoders);
+        
+        $projects = $this->getDoctrine()->getManager()->getRepository(Projects::class)->findAll();
+        $projects = $serializer->serialize($projects, 'json');
+
+        $response = new JsonResponse();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent($projects);
+
+        return $response;
+    }
+
+    public function convertToJson_Tasks()
+    {
+        $encoders = array(new JsonEncoder());
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(2);
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $normalizers = array($normalizer);
+        $serializer = new Serializer($normalizers, $encoders);
+        
+        $tasks = $this->getDoctrine()->getManager()->getRepository(Tasks::class)->findAll();
+        $tasks = $serializer->serialize($tasks, 'json');
+
+        $response = new JsonResponse();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent($tasks);
+
+        return $response;
     }
 }

@@ -1,9 +1,3 @@
 <div>
     <h1>Nothing much to see here :/<h1>
 </div>
-
-{% for flashMessage in app.session.flashBag.get('notice') %}
-    <div class="flash-notice">
-        {{ flashMessage }}
-    </div>
-{% endfor %}
