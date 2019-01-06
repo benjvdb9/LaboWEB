@@ -59,11 +59,11 @@ class TaskMNGRController extends Controller
     }
 
     /**
-     * @Route("/api/post/project/{title}", name="dbp-tasks", methods={"GET", "PUT", "OPTIONS"})
+     * @Route("/api/post/project/{title}", name="dbp-tasks", methods={"GET", "PUT", "POST", "OPTIONS"})
      */
     public function DB_PostP($title)
     {
-        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $proj = new Projects();
             $proj->setTitle($title);
             $proj->setCompletion(0);
@@ -89,6 +89,41 @@ class TaskMNGRController extends Controller
             $this->delProject($title);
 
             $response = $this->convertToJson_Tasks();
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type', true);
+
+            return $response;
+        }
+    }
+
+    /**
+     * @Route("/api/update/task/{id}", name="dbu-task", methods={"GET", "PUT", "POST", "OPTIONS"})
+     */
+    public function DB_updateT($id)
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->changeStatus($id);
+
+            $response = $this->convertToJson_Projects();
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type', true);
+
+            return $response;
+        }
+    }
+
+    /**
+     * @Route("/api/update/project/{title}/completion/{per}", name="dbuc-project", methods={"GET", "PUT", "POST", "OPTIONS"})
+     */
+    public function DB_updatePC($title, $per)
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $this->getProjectId($title);
+            $this->changeCompletion($id, $per);
+
+            $response = $this->convertToJson_Projects();
             $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->headers->set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
             $response->headers->set('Access-Control-Allow-Headers', 'Content-Type', true);
